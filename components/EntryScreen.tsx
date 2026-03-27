@@ -121,8 +121,8 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
             <p className="text-white/50 font-mulish text-xs">QLD missions</p>
           </div>
           <div>
-            <p className="text-lf-yellow font-roboto font-bold text-lg">$0</p>
-            <p className="text-white/50 font-mulish text-xs">govt funding</p>
+            <p className="text-lf-yellow font-roboto font-bold text-lg">9</p>
+            <p className="text-white/50 font-mulish text-xs">rescue bases</p>
           </div>
         </div>
       </div>

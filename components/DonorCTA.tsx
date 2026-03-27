@@ -8,7 +8,7 @@ export default function DonorCTA() {
           LifeFlight flew 3,200+ missions last year.
         </p>
         <p className="text-white/80 font-roboto text-lg mt-4">
-          Not one was funded by the government.
+          Every mission powered by people like you.
         </p>
         <p className="text-white font-roboto font-bold text-xl mt-6">
           Become a community protector.

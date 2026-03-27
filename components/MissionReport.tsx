@@ -133,11 +133,10 @@ export default function MissionReport({
           <p className="text-lf-navy font-roboto text-lg leading-[1.7]">
             In {missionData.suburb}, LifeFlight completed{" "}
             {missionData.missionCount} missions in 2025, launched from{" "}
-            {missionData.base}. Each one was funded entirely by community
-            donations — not a single dollar came from the government. For the
-            families in your area, LifeFlight was the difference between waiting
-            and surviving. These aren&apos;t statistics. They&apos;re your
-            neighbours.
+            {missionData.base}. Each one was made possible by community
+            supporters. For the families in your area, LifeFlight was the
+            difference between waiting and surviving. These aren&apos;t
+            statistics. They&apos;re your neighbours.
           </p>
         </div>
       </div>

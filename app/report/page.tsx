@@ -2,8 +2,9 @@
 
 import { useSearchParams } from "next/navigation";
 import { useMemo, Suspense } from "react";
-import { getMissionData } from "@/lib/missionData";
+import { getMissionData, getSponsor } from "@/lib/missionData";
 import { generateMission } from "@/lib/missionGenerator";
+import SponsorBanner from "@/components/SponsorBanner";
 import MissionReport from "@/components/MissionReport";
 import ShareCard from "@/components/ShareCard";
 import EmailCapture from "@/components/EmailCapture";
@@ -15,9 +16,11 @@ function ReportContent() {
 
   const missionData = useMemo(() => getMissionData(postcode), [postcode]);
   const missionLog = useMemo(() => generateMission(postcode), [postcode]);
+  const sponsor = useMemo(() => getSponsor(postcode), [postcode]);
 
   return (
     <main className="min-h-screen bg-white">
+      <SponsorBanner sponsor={sponsor} />
       <MissionReport
         postcode={postcode}
         missionData={missionData}

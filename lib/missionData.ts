@@ -42,6 +42,49 @@ const suburbLookup: Record<string, string> = {
   "4880": "Mareeba",
 };
 
+interface SponsorConfig {
+  min: number;
+  max: number;
+  name: string;
+}
+
+const sponsors: SponsorConfig[] = [
+  { min: 4000, max: 4009, name: "Suncorp Group" },
+  { min: 4010, max: 4030, name: "Ray White New Farm" },
+  { min: 4031, max: 4070, name: "Newstead Brewing Co" },
+  { min: 4071, max: 4080, name: "Indooroopilly Shopping Centre" },
+  { min: 4081, max: 4100, name: "Kenmore Village Medical" },
+  { min: 4101, max: 4110, name: "PA Hospital Foundation" },
+  { min: 4111, max: 4130, name: "Sunnybank Plaza" },
+  { min: 4131, max: 4160, name: "Browns Plains Grand Plaza" },
+  { min: 4161, max: 4209, name: "Logan Hospital Foundation" },
+  { min: 4210, max: 4214, name: "Westfield Coomera" },
+  { min: 4215, max: 4219, name: "The Star Gold Coast" },
+  { min: 4220, max: 4224, name: "Burleigh Brewing Company" },
+  { min: 4225, max: 4229, name: "Robina Town Centre" },
+  { min: 4300, max: 4310, name: "Springfield Orion" },
+  { min: 4311, max: 4349, name: "Ipswich City Council" },
+  { min: 4350, max: 4370, name: "FKG Group Toowoomba" },
+  { min: 4371, max: 4409, name: "Heritage Bank" },
+  { min: 4500, max: 4520, name: "Westfield North Lakes" },
+  { min: 4521, max: 4549, name: "Caboolture Sports Club" },
+  { min: 4550, max: 4559, name: "Stockland Caloundra" },
+  { min: 4560, max: 4569, name: "Big Pineapple" },
+  { min: 4570, max: 4599, name: "Noosa Council" },
+  { min: 4600, max: 4699, name: "Bundaberg Brewed Drinks" },
+  { min: 4700, max: 4799, name: "Mackay Regional Council" },
+  { min: 4800, max: 4869, name: "Townsville Enterprise" },
+  { min: 4870, max: 4879, name: "Cairns Convention Centre" },
+  { min: 4880, max: 4889, name: "Tablelands Regional Council" },
+  { min: 4890, max: 4999, name: "Queensland Country Credit Union" },
+];
+
+export function getSponsor(postcode: string): string {
+  const pc = parseInt(postcode, 10);
+  const sponsor = sponsors.find((s) => pc >= s.min && pc <= s.max);
+  return sponsor ? sponsor.name : "Queensland Community Partners";
+}
+
 interface RangeConfig {
   min: number;
   max: number;

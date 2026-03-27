@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { isValidQldPostcode } from "@/lib/missionData";
 
 interface EntryScreenProps {
@@ -18,23 +18,10 @@ function LifeFlightLogo() {
         xmlns="http://www.w3.org/2000/svg"
         className="w-10 h-10 md:w-12 md:h-12 shrink-0"
       >
-        <path
-          d="M24 8L8 24h6v12h20V24h6L24 8z"
-          fill="#FFB500"
-        />
-        <path
-          d="M18 28h12M20 24h8M22 20h4"
-          stroke="#0A365D"
-          strokeWidth="2"
-          strokeLinecap="square"
-        />
+        <path d="M24 8L8 24h6v12h20V24h6L24 8z" fill="#FFB500" />
+        <path d="M18 28h12M20 24h8M22 20h4" stroke="#0A365D" strokeWidth="2" strokeLinecap="square" />
         <circle cx="24" cy="14" r="2" fill="#0A365D" />
-        <path
-          d="M14 26l-4 2M34 26l4 2"
-          stroke="#FFB500"
-          strokeWidth="2"
-          strokeLinecap="square"
-        />
+        <path d="M14 26l-4 2M34 26l4 2" stroke="#FFB500" strokeWidth="2" strokeLinecap="square" />
       </svg>
       <span className="text-white font-roboto font-bold text-xl md:text-2xl tracking-wider">
         LIFEFLIGHT
@@ -46,6 +33,11 @@ function LifeFlightLogo() {
 export default function EntryScreen({ onSubmit }: EntryScreenProps) {
   const [postcode, setPostcode] = useState("");
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,8 +58,14 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
   };
 
   return (
-    <main className="min-h-dvh bg-lf-navy flex flex-col items-center justify-center px-5 py-10 pb-[env(safe-area-inset-bottom,0px)]">
-      <div className="w-full max-w-md flex flex-col items-center text-center">
+    <main className="min-h-dvh bg-lf-navy flex flex-col items-center justify-center px-5 py-10 pb-[env(safe-area-inset-bottom,0px)] relative overflow-hidden">
+      {/* Subtle background grid */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: "linear-gradient(rgba(255,181,0,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,181,0,1) 1px, transparent 1px)",
+        backgroundSize: "48px 48px",
+      }} />
+
+      <div className={`w-full max-w-md flex flex-col items-center text-center relative z-10 transition-all duration-700 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
         <LifeFlightLogo />
 
         <p className="text-lf-yellow font-mulish text-[11px] md:text-xs tracking-[0.25em] uppercase mb-5 md:mb-6">
@@ -93,32 +91,29 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
             value={postcode}
             onChange={handleChange}
             placeholder="Enter your postcode"
-            className="w-full bg-white/10 border border-white/20 text-white text-center text-[16px] md:text-2xl font-roboto py-4 px-6 placeholder:text-white/30 focus:outline-none focus:border-lf-yellow transition-colors duration-300 ease-in-out"
+            autoFocus
+            className="w-full bg-white/10 border border-white/20 text-white text-center text-[16px] md:text-2xl font-roboto py-4 px-6 placeholder:text-white/30 focus:outline-none focus:border-lf-yellow input-glow transition-all duration-300 ease-in-out"
           />
 
           {error && (
-            <p className="text-lf-foundation font-mulish text-sm">{error}</p>
+            <p className="text-lf-foundation font-mulish text-sm transition-opacity duration-300">{error}</p>
           )}
 
           <button
             type="submit"
-            className="w-full bg-lf-yellow text-lf-black font-mulish font-bold text-base py-4 px-6 active:bg-yellow-500 hover:bg-yellow-400 transition-colors duration-300 ease-in-out"
+            className="w-full bg-lf-yellow text-lf-black font-mulish font-bold text-base py-4 px-6 active:bg-yellow-500 hover:bg-yellow-400 active:scale-[0.98] transition-all duration-300 ease-in-out"
           >
             Generate My Report
           </button>
         </form>
 
-        <div className="mt-10 md:mt-16 w-full border-t border-white/10 pt-5 md:pt-6 grid grid-cols-3 gap-2 md:gap-4 text-center">
+        <div className={`mt-10 md:mt-16 w-full border-t border-white/10 pt-5 md:pt-6 grid grid-cols-3 gap-2 md:gap-4 text-center transition-all duration-700 delay-300 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
           <div>
-            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">
-              8,000+
-            </p>
+            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">8,000+</p>
             <p className="text-white/50 font-mulish text-[10px] md:text-xs">people helped</p>
           </div>
           <div>
-            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">
-              3,200+
-            </p>
+            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">3,200+</p>
             <p className="text-white/50 font-mulish text-[10px] md:text-xs">QLD missions</p>
           </div>
           <div>

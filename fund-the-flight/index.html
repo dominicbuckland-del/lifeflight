@@ -4,9 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Fund the Flight — LifeFlight Australia</title>
+<meta name="description" content="Every LifeFlight rescue mission costs $4,375. Walk through where every dollar goes — crew, fuel, medicine, maintenance — then decide what a life is worth.">
+<link rel="canonical" href="https://fund-the-flight.vercel.app">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fund-the-flight.vercel.app">
+<meta property="og:title" content="Fund the Flight — What It Costs to Save a Life at 3,000 Feet">
+<meta property="og:description" content="Every LifeFlight mission costs $4,375. Zero government funding. Walk through the real cost of an aeromedical rescue.">
+<meta property="og:image" content="https://fund-the-flight.vercel.app/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="LifeFlight Australia">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fund the Flight — What It Costs to Save a Life at 3,000 Feet">
+<meta name="twitter:description" content="Every LifeFlight mission costs $4,375. Zero government funding. Walk through the real cost of an aeromedical rescue.">
+<meta name="twitter:image" content="https://fund-the-flight.vercel.app/og-image.jpg">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A365D'/><text x='16' y='22' font-size='18' font-weight='bold' text-anchor='middle' fill='%23FFB500'>LF</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230A365D'/><text x='90' y='118' font-size='80' font-weight='bold' text-anchor='middle' fill='%23FFB500'>LF</text></svg>">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Fund the Flight",
+  "description": "Interactive cost breakdown of a LifeFlight aeromedical rescue mission",
+  "url": "https://fund-the-flight.vercel.app",
+  "publisher": {
+    "@type": "NGO",
+    "name": "LifeFlight Australia",
+    "url": "https://www.lifeflight.org.au"
+  }
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -18,32 +62,38 @@
   --blue: #04A9C7;
   --orange: #F47922;
   --white: #FFFFFF;
-  --red: #E8453C;
 }
 
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
   background: var(--navy-deep);
   color: var(--white);
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
-h1, h2, h3, h4, h5, h6 { font-family: 'Mulish', sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Mulish', 'Segoe UI', Arial, sans-serif; }
+
+/* --- SKIP LINK --- */
+.skip-link {
+  position: absolute; top: -100px; left: 16px; z-index: 200;
+  background: var(--yellow); color: var(--navy);
+  padding: 12px 20px; border-radius: 4px;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 14px; text-decoration: none;
+}
+.skip-link:focus { top: 8px; }
+
+/* --- FOCUS --- */
+*:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
 
 /* --- HEADER --- */
 .header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: var(--navy-deep);
-  padding: 10px 16px;
-  padding-top: max(10px, env(safe-area-inset-top));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(7,30,53,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 10px 16px; padding-top: max(10px, env(safe-area-inset-top));
+  display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 @media (min-width: 769px) { .header { padding: 14px 32px; } }
@@ -52,237 +102,221 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Mulish', sans-serif; }
 .logo span { color: var(--yellow); }
 @media (min-width: 769px) { .logo { font-size: 20px; } }
 
-.header-tag { font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+.header-tag { font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
 @media (min-width: 769px) { .header-tag { font-size: 13px; } }
 
 /* --- PROGRESS TRACK --- */
 .progress-track {
-  position: fixed;
-  top: 48px;
-  left: 0; right: 0;
-  z-index: 99;
-  height: 3px;
-  background: rgba(255,255,255,0.08);
+  position: fixed; top: 48px; left: 0; right: 0; z-index: 99;
+  height: 3px; background: rgba(255,255,255,0.06);
 }
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--yellow);
-  transition: width 0.5s ease;
-}
+.progress-fill { height: 100%; width: 0%; background: var(--yellow); transition: width 0.3s ease; }
 
 /* --- HERO --- */
 .hero {
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 80px 20px 48px;
-  position: relative;
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 80px 20px 48px; position: relative; overflow: hidden;
 }
+
+/* Animated hero background (video placeholder) */
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0; overflow: hidden;
+}
+.hero-bg::before {
+  content: '';
+  position: absolute; inset: -50%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(4,169,199,0.12) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 60%, rgba(98,195,165,0.08) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 20%, rgba(255,181,0,0.05) 0%, transparent 40%);
+  animation: hero-drift 20s ease-in-out infinite alternate;
+}
+@keyframes hero-drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-5%, 3%) scale(1.1); }
+}
+
+/* Floating particles */
+.hero-particles {
+  position: absolute; inset: 0; z-index: 1;
+}
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  animation: particle-float linear infinite;
+}
+@keyframes particle-float {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(40px); opacity: 0; }
+}
+
+/* Helicopter silhouette */
+.hero-heli {
+  position: absolute;
+  bottom: 20%; right: -10%;
+  width: 280px; height: 140px;
+  opacity: 0.04;
+  z-index: 1;
+  animation: heli-drift 30s ease-in-out infinite alternate;
+}
+@media (min-width: 769px) { .hero-heli { width: 400px; height: 200px; opacity: 0.06; bottom: 15%; } }
+@keyframes heli-drift {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(-15vw) translateY(-20px); }
+}
+.hero-heli svg { width: 100%; height: 100%; fill: var(--white); }
+
+/* Video placeholder badge */
+.video-placeholder-badge {
+  position: absolute; top: 68px; right: 16px; z-index: 2;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 10px;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.3); border: 1px dashed rgba(255,255,255,0.15);
+  padding: 6px 12px; border-radius: 3px;
+}
+@media (min-width: 769px) { .video-placeholder-badge { top: 72px; right: 32px; font-size: 11px; } }
+
+.hero-content { position: relative; z-index: 2; }
 
 .hero-pretitle {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--yellow);
-  margin-bottom: 20px;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 12px;
+  text-transform: uppercase; letter-spacing: 2px; color: var(--yellow); margin-bottom: 20px;
 }
 
-.hero h1 {
-  font-size: 32px;
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 20px;
-  max-width: 600px;
-}
+.hero h1 { font-size: 32px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; max-width: 600px; }
 @media (min-width: 769px) { .hero h1 { font-size: 56px; } }
 
-.hero p {
-  font-size: 16px;
-  line-height: 1.7;
-  opacity: 0.6;
-  max-width: 480px;
-  margin-bottom: 40px;
-}
+.hero p { font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.7); max-width: 480px; margin-bottom: 40px; }
 
 .hero-start {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--navy);
-  background: var(--yellow);
-  border: none;
-  padding: 16px 32px;
-  border-radius: 4px;
-  cursor: pointer;
-  min-height: 48px;
-  transition: opacity 0.2s;
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 14px;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--navy); background: var(--yellow); border: none;
+  padding: 16px 32px; border-radius: 4px; cursor: pointer; min-height: 48px;
+  transition: opacity 0.2s, transform 0.15s;
 }
-.hero-start:hover { opacity: 0.9; }
-
+.hero-start:hover { opacity: 0.9; transform: translateY(-1px); }
 .hero-start svg { width: 16px; height: 16px; fill: none; stroke: var(--navy); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
 .scroll-hint {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.25);
-  animation: pulse-hint 2s ease infinite;
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.5);
 }
-@keyframes pulse-hint { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.5; } }
+.scroll-hint-arrow {
+  display: block; margin: 8px auto 0; width: 20px; height: 20px;
+  border-right: 2px solid rgba(255,255,255,0.3); border-bottom: 2px solid rgba(255,255,255,0.3);
+  transform: rotate(45deg);
+  animation: bounce-arrow 2s ease infinite;
+}
+@keyframes bounce-arrow {
+  0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.3; }
+  50% { transform: rotate(45deg) translateY(6px); opacity: 0.7; }
+}
 
 /* --- COST STEPS --- */
-.steps-container {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 0 20px 40px;
-}
+.steps-container { max-width: 720px; margin: 0 auto; padding: 0 20px 40px; }
 @media (min-width: 769px) { .steps-container { padding: 0 32px 60px; } }
 
-.step {
-  padding: 48px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.step.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.steps-list { list-style: none; }
 
+.step {
+  padding: 56px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  opacity: 0; transform: translateY(30px);
+  display: grid; grid-template-columns: 1fr; gap: 0;
+}
+.step.visible { opacity: 1; transform: translateY(0); }
 .step:last-child { border-bottom: none; }
 
-.step-label {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.35);
-  margin-bottom: 12px;
+@media (min-width: 600px) {
+  .step { grid-template-columns: 200px 1fr; gap: 32px; align-items: start; }
 }
 
-.step-icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 16px;
+/* Photo placeholder */
+.step-photo {
+  width: 100%; aspect-ratio: 4/3; border-radius: 6px;
+  margin-bottom: 20px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
 }
-.step-icon svg {
-  width: 100%;
-  height: 100%;
-  fill: none;
-  stroke: var(--teal);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+@media (min-width: 600px) { .step-photo { margin-bottom: 0; aspect-ratio: 1/1; } }
+
+.step-photo-inner {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;
+}
+.step-photo-icon { width: 48px; height: 48px; opacity: 0.5; }
+.step-photo-icon svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.step-photo-tag {
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 9px;
+  text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.35;
+  border: 1px dashed currentColor; padding: 3px 8px; border-radius: 2px;
+}
+
+.step-photo--1 { background: linear-gradient(135deg, #0d3f6b 0%, #0a2d4d 100%); color: var(--blue); }
+.step-photo--2 { background: linear-gradient(135deg, #0b3a60 0%, #071e35 100%); color: var(--teal); }
+.step-photo--3 { background: linear-gradient(135deg, #132f4a 0%, #0a2844 100%); color: var(--orange); }
+.step-photo--4 { background: linear-gradient(135deg, #0d3a5e 0%, #091d33 100%); color: var(--yellow); }
+.step-photo--5 { background: linear-gradient(135deg, #0c3860 0%, #0a2d4d 100%); color: var(--blue); }
+.step-photo--6 { background: linear-gradient(135deg, #0e3b5f 0%, #071e35 100%); color: var(--teal); }
+
+.step-body {}
+
+.step-label {
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.55); margin-bottom: 12px;
 }
 
 .step-name {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 22px;
-  margin-bottom: 10px;
+  font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 22px; margin-bottom: 10px;
 }
 @media (min-width: 769px) { .step-name { font-size: 28px; } }
 
 .step-desc {
-  font-size: 15px;
-  line-height: 1.65;
-  opacity: 0.6;
-  margin-bottom: 20px;
-  max-width: 520px;
+  font-size: 15px; line-height: 1.65; color: rgba(255,255,255,0.7); margin-bottom: 20px; max-width: 520px;
 }
 @media (min-width: 769px) { .step-desc { font-size: 16px; } }
 
 .step-cost {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 28px;
-  color: var(--yellow);
+  font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 28px; color: var(--yellow);
 }
 @media (min-width: 769px) { .step-cost { font-size: 36px; } }
 
 /* --- RUNNING TOTAL BAR --- */
 .running-total {
-  position: fixed;
-  bottom: 0;
-  left: 0; right: 0;
-  z-index: 100;
-  background: var(--navy);
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(10,54,93,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 12px 20px;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transform: translateY(100%);
-  transition: transform 0.4s ease;
+  padding: 12px 20px; padding-bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex; align-items: center; justify-content: space-between;
+  transform: translateY(100%); transition: transform 0.4s ease;
 }
 .running-total.show { transform: translateY(0); }
 @media (min-width: 769px) { .running-total { padding: 14px 32px; } }
 
-.running-total-label {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.4);
-}
+.running-total-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.55); }
+.running-total-amount { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 22px; color: var(--yellow); }
 
-.running-total-amount {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 22px;
-  color: var(--yellow);
-  transition: transform 0.3s ease;
-}
-.running-total-amount.bump {
-  transform: scale(1.15);
-}
+/* --- COST COLUMN --- */
+.cost-column-wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 48px; }
+@media (min-width: 769px) { .cost-column-wrap { padding: 0 32px 60px; } }
 
-/* --- COST COLUMN (visual stack) --- */
 .cost-column {
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  width: 100%; max-width: 520px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 2px;
 }
 
 .cost-bar {
-  height: 0;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  height: 0; border-radius: 3px;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 0 14px;
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  overflow: hidden;
-  transition: height 0.6s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.4s ease;
-  opacity: 0;
-  color: var(--white);
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 12px;
+  overflow: hidden; opacity: 0; color: var(--white);
 }
-.cost-bar.reveal {
-  opacity: 1;
-}
+.cost-bar.reveal { opacity: 1; }
 @media (min-width: 769px) { .cost-bar { font-size: 13px; padding: 0 18px; } }
 
 .cost-bar-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -290,421 +324,420 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Mulish', sans-serif; }
 
 /* --- TOTAL REVEAL --- */
 .total-section {
-  padding: 64px 20px 48px;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  padding: 80px 20px 48px; text-align: center;
+  opacity: 0; transform: translateY(20px);
 }
 .total-section.visible { opacity: 1; transform: translateY(0); }
 
 .total-label {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 12px;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 13px;
+  text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.55); margin-bottom: 12px;
+}
+.total-amount { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 48px; color: var(--yellow); margin-bottom: 8px; }
+@media (min-width: 769px) { .total-amount { font-size: 72px; } }
+
+.total-context { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.6); max-width: 440px; margin: 0 auto 16px; }
+.total-divider { width: 48px; height: 2px; background: rgba(255,255,255,0.1); margin: 32px auto; }
+
+/* --- TESTIMONIAL --- */
+.testimonial-section {
+  padding: 48px 20px 80px; max-width: 640px; margin: 0 auto; text-align: center;
+  opacity: 0; transform: translateY(20px);
+}
+.testimonial-section.visible { opacity: 1; transform: translateY(0); }
+
+.testimonial-photo {
+  width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 24px;
+  background: linear-gradient(135deg, #0d3f6b, #0a2844);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 24px; color: var(--teal);
+  border: 2px solid rgba(98,195,165,0.2);
+  position: relative;
+}
+.testimonial-photo-tag {
+  position: absolute; bottom: -6px; right: -6px;
+  font-size: 7px; text-transform: uppercase; letter-spacing: 1px;
+  background: var(--navy-deep); color: rgba(255,255,255,0.3);
+  padding: 2px 5px; border-radius: 2px; border: 1px dashed rgba(255,255,255,0.15);
 }
 
-.total-amount {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 48px;
-  color: var(--yellow);
-  margin-bottom: 8px;
+.testimonial-quote {
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 20px; line-height: 1.6;
+  color: var(--white); margin-bottom: 24px; font-style: italic;
+  position: relative; padding: 0 8px;
 }
-@media (min-width: 769px) { .total-amount { font-size: 64px; } }
+@media (min-width: 769px) { .testimonial-quote { font-size: 24px; } }
 
-.total-context {
-  font-size: 15px;
-  line-height: 1.7;
-  opacity: 0.5;
-  max-width: 400px;
-  margin: 0 auto 16px;
+.testimonial-quote::before {
+  content: '\201C'; position: absolute; top: -16px; left: -8px;
+  font-size: 64px; color: var(--yellow); opacity: 0.2; font-style: normal; line-height: 1;
 }
 
-.total-divider {
-  width: 48px;
-  height: 2px;
-  background: rgba(255,255,255,0.1);
-  margin: 32px auto;
+.testimonial-attr {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+}
+.testimonial-attr strong { color: rgba(255,255,255,0.7); font-weight: 700; }
+
+.testimonial-placeholder-note {
+  margin-top: 16px; font-size: 11px; color: rgba(255,255,255,0.25);
+  border: 1px dashed rgba(255,255,255,0.1); display: inline-block;
+  padding: 4px 10px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px;
 }
 
 /* --- SCALE SECTION --- */
 .scale-section {
-  padding: 0 20px 64px;
-  max-width: 640px;
-  margin: 0 auto;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  padding: 0 20px 64px; max-width: 640px; margin: 0 auto; text-align: center;
+  opacity: 0; transform: translateY(20px);
 }
 .scale-section.visible { opacity: 1; transform: translateY(0); }
 
-.scale-heading {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 24px;
-  margin-bottom: 12px;
-}
+.scale-heading { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 24px; margin-bottom: 12px; }
 @media (min-width: 769px) { .scale-heading { font-size: 32px; } }
 
-.scale-copy {
-  font-size: 15px;
-  line-height: 1.7;
-  opacity: 0.5;
-  max-width: 460px;
-  margin: 0 auto 40px;
-}
+.scale-copy { font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.6); max-width: 460px; margin: 0 auto 40px; }
 
-.scale-stats {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  margin-bottom: 48px;
-}
+.scale-stats { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; }
 @media (min-width: 480px) { .scale-stats { grid-template-columns: 1fr 1fr 1fr; } }
 
-.scale-stat-num {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 36px;
-  color: var(--yellow);
-  margin-bottom: 4px;
-}
+.scale-stat-num { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 36px; color: var(--yellow); margin-bottom: 4px; }
 @media (min-width: 769px) { .scale-stat-num { font-size: 44px; } }
 
-.scale-stat-label {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.4;
-}
+.scale-stat-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.55); }
 
-.scale-punchline {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 18px;
-  line-height: 1.5;
-  max-width: 460px;
-  margin: 0 auto 12px;
-  color: var(--white);
-}
-@media (min-width: 769px) { .scale-punchline { font-size: 22px; } }
-
-.scale-sub {
-  font-size: 14px;
-  opacity: 0.4;
-  margin-bottom: 48px;
-}
-
-.govt-zero {
-  display: inline-block;
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 56px;
-  color: var(--red);
-  margin-bottom: 8px;
-}
+.govt-zero { display: inline-block; font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 56px; color: var(--orange); margin-bottom: 8px; }
 @media (min-width: 769px) { .govt-zero { font-size: 72px; } }
 
-.govt-label {
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  opacity: 0.5;
-  margin-bottom: 48px;
-}
+.govt-label { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.6); margin-bottom: 48px; }
+
+.scale-punchline { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 18px; line-height: 1.5; max-width: 460px; margin: 0 auto 12px; }
+@media (min-width: 769px) { .scale-punchline { font-size: 22px; } }
+
+.scale-sub { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 48px; }
 
 /* --- SLIDER --- */
 .slider-section {
-  padding: 0 20px 80px;
-  max-width: 560px;
-  margin: 0 auto;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  padding: 0 20px 80px; max-width: 560px; margin: 0 auto; text-align: center;
+  opacity: 0; transform: translateY(20px);
 }
 .slider-section.visible { opacity: 1; transform: translateY(0); }
 
-.slider-heading {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 22px;
-  margin-bottom: 32px;
-}
+.slider-heading { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 22px; margin-bottom: 32px; }
 @media (min-width: 769px) { .slider-heading { font-size: 28px; } }
 
-.slider-amount {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 900;
-  font-size: 48px;
-  color: var(--yellow);
-  margin-bottom: 8px;
-  transition: transform 0.15s ease;
-}
+.slider-amount { font-family: 'Mulish', sans-serif; font-weight: 900; font-size: 48px; color: var(--yellow); margin-bottom: 8px; }
 @media (min-width: 769px) { .slider-amount { font-size: 64px; } }
 
-.slider-equiv {
-  font-size: 15px;
-  line-height: 1.6;
-  opacity: 0.6;
-  margin-bottom: 32px;
-  min-height: 48px;
-}
+.slider-equiv { font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.7); margin-bottom: 32px; min-height: 48px; }
 
 .range-wrap { position: relative; padding: 0 4px; margin-bottom: 40px; }
 
+.range-label-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
 input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(255,255,255,0.1);
-  outline: none;
-  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,0.1); outline: none; cursor: pointer;
 }
-
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--yellow);
-  border: 3px solid var(--navy-deep);
-  cursor: pointer;
+  -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--yellow); border: 3px solid var(--navy-deep); cursor: pointer;
+  transition: transform 0.15s;
 }
-
+input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.2); }
 input[type="range"]::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--yellow);
-  border: 3px solid var(--navy-deep);
-  cursor: pointer;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--yellow); border: 3px solid var(--navy-deep); cursor: pointer;
+}
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--yellow), 0 0 0 6px var(--navy-deep);
 }
 
 .range-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: rgba(255,255,255,0.25);
-  margin-top: 8px;
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
+  display: flex; justify-content: space-between; font-size: 11px;
+  color: rgba(255,255,255,0.5); margin-top: 8px; font-family: 'Mulish', sans-serif; font-weight: 700;
 }
 
 .slider-presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 40px;
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 40px;
 }
 
 .preset-btn {
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  padding: 10px 18px;
-  border-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: transparent;
-  color: var(--white);
-  cursor: pointer;
-  min-height: 44px;
-  transition: border-color 0.2s, background 0.2s;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 13px;
+  padding: 10px 18px; border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.15); background: transparent;
+  color: var(--white); cursor: pointer; min-height: 44px;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
 }
-.preset-btn:hover { border-color: var(--yellow); }
-.preset-btn.active { background: var(--yellow); color: var(--navy); border-color: var(--yellow); }
+.preset-btn:hover { border-color: var(--yellow); transform: translateY(-1px); }
+.preset-btn[aria-pressed="true"] { background: var(--yellow); color: var(--navy); border-color: var(--yellow); }
 
 /* --- CTA --- */
-.cta-final {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
+.cta-final { display: flex; flex-direction: column; gap: 12px; align-items: center; }
 @media (min-width: 480px) { .cta-final { flex-direction: row; justify-content: center; gap: 16px; } }
 
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Mulish', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-decoration: none;
-  padding: 14px 28px;
-  border-radius: 4px;
-  min-height: 48px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 14px;
+  text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+  padding: 14px 28px; border-radius: 4px; min-height: 48px;
   transition: opacity 0.2s, transform 0.15s;
 }
 .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 .btn--primary { background: var(--yellow); color: var(--navy); }
-.btn--ghost { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.2); }
-.btn--ghost:hover { border-color: rgba(255,255,255,0.5); }
+.btn--ghost { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.25); }
+.btn--ghost:hover { border-color: rgba(255,255,255,0.6); }
+
+/* --- SHARE --- */
+.share-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 24px; }
+.share-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); }
+.share-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15); background: transparent;
+  color: var(--white); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.share-btn:hover { border-color: var(--yellow); background: rgba(255,181,0,0.1); }
+.share-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* --- DISCLAIMER --- */
+.disclaimer {
+  max-width: 560px; margin: 0 auto; padding: 0 20px 48px;
+  font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.4); text-align: center;
+}
+.disclaimer a { color: rgba(255,255,255,0.55); }
 
 /* --- FOOTER --- */
 .footer {
   border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 20px 16px 80px;
-  padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
-  text-align: center;
-  font-size: 12px;
-  color: rgba(255,255,255,0.3);
+  padding: 24px 16px 80px; padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
+  text-align: center; font-size: 12px; color: rgba(255,255,255,0.5);
 }
-.footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+.footer a { color: rgba(255,255,255,0.55); text-decoration: none; }
 .footer a:hover { color: var(--white); }
+.footer-legal { margin-top: 12px; font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.6; }
 
 /* --- REDUCED MOTION --- */
 @media (prefers-reduced-motion: reduce) {
-  .step, .total-section, .scale-section, .slider-section, .cost-bar, .running-total, .running-total-amount {
-    transition: none;
-  }
-  .step { opacity: 1; transform: none; }
-  .total-section, .scale-section, .slider-section { opacity: 1; transform: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .step, .total-section, .scale-section, .slider-section, .testimonial-section { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
+}
+
+/* --- PRINT --- */
+@media print {
+  .header, .progress-track, .running-total, .scroll-hint, .hero-start,
+  .share-row, .slider-section, .skip-link, .hero-bg, .hero-particles,
+  .hero-heli, .video-placeholder-badge { display: none !important; }
+  body { background: #fff; color: #000; }
+  .hero, .step, .total-section, .scale-section, .testimonial-section, .cost-bar {
+    opacity: 1 !important; transform: none !important; break-inside: avoid;
+  }
+  .hero { min-height: auto; padding: 24px 0; }
+  .hero h1 { color: var(--navy); font-size: 28px; }
+  .hero p, .hero-pretitle { color: #333; }
+  .step { padding: 20px 0; }
+  .step-photo { display: none; }
+  .step-name, .step-label { color: var(--navy); }
+  .step-desc { color: #333; }
+  .step-cost, .total-amount { color: var(--navy); }
+  .total-label, .total-context { color: #333; }
+  .scale-section, .testimonial-section { color: #000; }
+  .scale-stat-num { color: var(--navy); }
+  .scale-heading, .scale-punchline, .testimonial-quote { color: var(--navy); }
+  .govt-zero { color: #c00; }
+  .scale-copy, .scale-sub, .govt-label, .scale-stat-label, .testimonial-attr { color: #333; }
+  .cost-bar { height: auto !important; opacity: 1 !important; padding: 6px 14px; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .footer { color: #666; border-color: #ccc; padding-bottom: 24px; }
+  .disclaimer { color: #666; }
 }
 </style>
 </head>
 <body>
 
-<header class="header">
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<header class="header" role="banner">
   <div class="logo">Life<span>Flight</span></div>
   <div class="header-tag">Fund the Flight</div>
 </header>
 
-<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<div class="progress-track" role="progressbar" aria-label="Page scroll progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" id="progressFill"></div></div>
 
 <!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-pretitle">The cost of one mission</div>
-  <h1>What It Takes to Save a Life at 3,000 Feet</h1>
-  <p>Every LifeFlight mission costs $4,375. Walk through where every dollar goes — then decide what it's worth.</p>
-  <button class="hero-start" id="heroStart">
-    Begin
-    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-  </button>
-  <div class="scroll-hint">Scroll to begin</div>
+<section class="hero" id="hero" aria-labelledby="hero-heading">
+  <!-- Animated background (placeholder for video) -->
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-particles" id="heroParticles" aria-hidden="true"></div>
+  <div class="hero-heli" aria-hidden="true">
+    <svg viewBox="0 0 400 200"><path d="M180 60h-60l-10 10h-30l-5 10h-15l-5 15h-10l-3 10h-8l10 25h25l8-10h20l5-5h30l10 15h60l15-15h25l20 15h15l10-10h8l-5-15h-10l-3-8 h-15l-5-10h-20l-10-12h-30l-5 5h-10z"/><ellipse cx="320" cy="55" rx="80" ry="3"/><rect x="195" y="42" width="10" height="20" rx="2"/><line x1="140" y1="50" x2="260" y2="50" stroke-width="3" stroke="currentColor" fill="none" opacity="0.3"/></svg>
+  </div>
+  <div class="video-placeholder-badge" aria-hidden="true">Video placeholder</div>
+
+  <div class="hero-content">
+    <div class="hero-pretitle">The cost of one mission</div>
+    <h1 id="hero-heading">What It Takes to Save a Life at 3,000 Feet</h1>
+    <p>Every LifeFlight mission costs $4,375. Walk through where every dollar goes — then decide what it's worth.</p>
+    <button class="hero-start" id="heroStart" aria-label="Begin the cost walkthrough">
+      Begin
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    Scroll to begin
+    <span class="scroll-hint-arrow"></span>
+  </div>
 </section>
+
+<!-- MAIN -->
+<main id="main-content">
 
 <!-- COST STEPS -->
 <div class="steps-container" id="stepsContainer">
+  <ol class="steps-list" role="list">
 
-  <!-- Step 1 -->
-  <div class="step" data-cost="380" data-bar-color="#04A9C7">
-    <div class="step-label">Step 01</div>
-    <div class="step-icon">
-      <svg viewBox="0 0 48 48"><circle cx="24" cy="16" r="8"/><path d="M24 8v16M16 16h16"/><path d="M12 38c0-6.6 5.4-12 12-12s12 5.4 12 38"/></svg>
-    </div>
-    <h3 class="step-name">Crew Activation</h3>
-    <p class="step-desc">The call comes in. A critical care doctor, flight paramedic, and rescue crew officer are paged. Within 60 seconds they're moving to the aircraft. Salaries, training, rostering — this is the cost of having the right people ready around the clock.</p>
-    <div class="step-cost">$380</div>
-  </div>
+    <li class="step" data-cost="380" data-step-index="0">
+      <div class="step-photo step-photo--1">
+        <div class="step-photo-inner">
+          <div class="step-photo-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="16" r="8"/><path d="M24 8v16M16 16h16"/><path d="M12 38c0-6.6 5.4-12 12-12s12 5.4 12 12"/></svg></div>
+          <span class="step-photo-tag">Photo: crew briefing room</span>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-label">Step 01</div>
+        <h3 class="step-name">Crew Activation</h3>
+        <p class="step-desc">The call comes in. A critical care doctor, flight paramedic, and rescue crew officer are paged. Within 60 seconds they're moving to the aircraft. Salaries, training, rostering — this is the cost of having the right people ready around the clock.</p>
+        <div class="step-cost" aria-label="Cost: $380">$380</div>
+      </div>
+    </li>
 
-  <!-- Step 2 -->
-  <div class="step" data-cost="1240" data-bar-color="#62C3A5">
-    <div class="step-label">Step 02</div>
-    <div class="step-icon">
-      <svg viewBox="0 0 48 48"><path d="M8 30l16-6 16 6"/><path d="M24 24V12"/><path d="M20 12h8"/><path d="M14 24l-6 4"/><path d="M34 24l6 4"/><ellipse cx="24" cy="32" rx="14" ry="5"/></svg>
-    </div>
-    <h3 class="step-name">Fuel &amp; Flight Ops</h3>
-    <p class="step-desc">An AW139 helicopter burns roughly 300 litres of Jet A-1 per hour. Add navigation, comms, flight planning, and the ground crew that keep the aircraft turning. Most missions fly 200+ kilometres each way.</p>
-    <div class="step-cost">$1,240</div>
-  </div>
+    <li class="step" data-cost="1240" data-step-index="1">
+      <div class="step-photo step-photo--2">
+        <div class="step-photo-inner">
+          <div class="step-photo-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 30l16-6 16 6"/><path d="M24 24V12"/><path d="M20 12h8"/><path d="M14 24l-6 4"/><path d="M34 24l6 4"/><ellipse cx="24" cy="32" rx="14" ry="5"/></svg></div>
+          <span class="step-photo-tag">Photo: AW139 on helipad</span>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-label">Step 02</div>
+        <h3 class="step-name">Fuel &amp; Flight Ops</h3>
+        <p class="step-desc">An AW139 helicopter burns roughly 300 litres of Jet A-1 per hour. Add navigation, comms, flight planning, and the ground crew that keep the aircraft turning. Most missions fly 200+ kilometres each way.</p>
+        <div class="step-cost" aria-label="Cost: $1,240">$1,240</div>
+      </div>
+    </li>
 
-  <!-- Step 3 -->
-  <div class="step" data-cost="890" data-bar-color="#F47922">
-    <div class="step-label">Step 03</div>
-    <div class="step-icon">
-      <svg viewBox="0 0 48 48"><rect x="10" y="14" width="28" height="22" rx="3"/><path d="M18 14v-4a6 6 0 0112 0v4"/><path d="M24 22v8M20 26h8"/></svg>
-    </div>
-    <h3 class="step-name">Medical Consumables</h3>
-    <p class="step-desc">IV fluids, medications, intubation kits, surgical instruments, blood products, ventilator circuits. Every mission depletes supplies that must be restocked and quality-checked before the next call.</p>
-    <div class="step-cost">$890</div>
-  </div>
+    <li class="step" data-cost="890" data-step-index="2">
+      <div class="step-photo step-photo--3">
+        <div class="step-photo-inner">
+          <div class="step-photo-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="10" y="14" width="28" height="22" rx="3"/><path d="M18 14v-4a6 6 0 0112 0v4"/><path d="M24 22v8M20 26h8"/></svg></div>
+          <span class="step-photo-tag">Photo: medical kit loadout</span>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-label">Step 03</div>
+        <h3 class="step-name">Medical Consumables</h3>
+        <p class="step-desc">IV fluids, medications, intubation kits, surgical instruments, blood products, ventilator circuits. Every mission depletes supplies that must be restocked and quality-checked before the next call.</p>
+        <div class="step-cost" aria-label="Cost: $890">$890</div>
+      </div>
+    </li>
 
-  <!-- Step 4 -->
-  <div class="step" data-cost="640" data-bar-color="#FFB500">
-    <div class="step-label">Step 04</div>
-    <div class="step-icon">
-      <svg viewBox="0 0 48 48"><rect x="8" y="10" width="32" height="28" rx="4"/><line x1="8" y1="18" x2="40" y2="18"/><path d="M16 26h10M16 32h6"/><circle cx="34" cy="32" r="4"/><path d="M31 32l2 2 4-4"/></svg>
-    </div>
-    <h3 class="step-name">Medical Equipment</h3>
-    <p class="step-desc">Portable ventilators, defibrillators, ultrasound machines, infusion pumps — ICU-grade devices hardened for flight. Every hour in the air is an hour of wear on equipment that costs hundreds of thousands to replace.</p>
-    <div class="step-cost">$640</div>
-  </div>
+    <li class="step" data-cost="640" data-step-index="3">
+      <div class="step-photo step-photo--4">
+        <div class="step-photo-inner">
+          <div class="step-photo-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="8" y="10" width="32" height="28" rx="4"/><line x1="8" y1="18" x2="40" y2="18"/><path d="M16 26h10M16 32h6"/><circle cx="34" cy="32" r="4"/><path d="M31 32l2 2 4-4"/></svg></div>
+          <span class="step-photo-tag">Photo: onboard ICU equipment</span>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-label">Step 04</div>
+        <h3 class="step-name">Medical Equipment</h3>
+        <p class="step-desc">Portable ventilators, defibrillators, ultrasound machines, infusion pumps — ICU-grade devices hardened for flight. Every hour in the air is an hour of wear on equipment that costs hundreds of thousands to replace.</p>
+        <div class="step-cost" aria-label="Cost: $640">$640</div>
+      </div>
+    </li>
 
-  <!-- Step 5 -->
-  <div class="step" data-cost="520" data-bar-color="#04A9C7">
-    <div class="step-label">Step 05</div>
-    <div class="step-icon">
-      <svg viewBox="0 0 48 48"><path d="M14 40V20l10-10 10 10v20"/><path d="M20 40v-10h8v10"/><rect x="20" y="24" width="8" height="6" rx="1"/></svg>
-    </div>
-    <h3 class="step-name">Base Operations</h3>
-    <p class="step-desc">Helipads, hangars, crew quarters, communications infrastructure, 24/7 operations centres across Queensland. The lights stay on whether the phone rings or not.</p>
-    <div class="step-cost">$520</div>
-  </div>
+    <li class="step" data-cost="520" data-step-index="4">
+      <div class="step-photo step-photo--5">
+        <div class="step-photo-inner">
+          <div class="step-photo-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M14 40V20l10-10 10 10v20"/><path d="M20 40v-10h8v10"/><rect x="20" y="24" width="8" height="6" rx="1"/></svg></div>
+          <span class="step-photo-tag">Photo: operations centre</span>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-label">Step 05</div>
+        <h3 class="step-name">Base Operations</h3>
+        <p class="step-desc">Helipads, hangars, crew quarters, communications infrastructure, 24/7 operations centres across Queensland. The lights stay on whether the phone rings or not.</p>
+        <div class="step-cost" aria-label="Cost: $520">$520</div>
+      </div>
+    </li>
 
-  <!-- Step 6 -->
-  <div class="step" data-cost="705" data-bar-color="#62C3A5">
-    <div class="step-label">Step 06</div>
-    <div class="step-icon">
-      <svg viewBox="0 0 48 48"><path d="M12 36c0-8 5-14 12-14s12 6 12 14"/><circle cx="24" cy="16" r="6"/><path d="M6 40h36"/><path d="M18 28l-4 4M30 28l4 4"/></svg>
-    </div>
-    <h3 class="step-name">Airframe Maintenance</h3>
-    <p class="step-desc">Mandatory inspections, component replacements, airworthiness compliance. A helicopter requires roughly 12 hours of maintenance for every hour it flies. Safety is not optional — and it's not cheap.</p>
-    <div class="step-cost">$705</div>
-  </div>
+    <li class="step" data-cost="705" data-step-index="5">
+      <div class="step-photo step-photo--6">
+        <div class="step-photo-inner">
+          <div class="step-photo-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M12 36c0-8 5-14 12-14s12 6 12 14"/><circle cx="24" cy="16" r="6"/><path d="M6 40h36"/><path d="M18 28l-4 4M30 28l4 4"/></svg></div>
+          <span class="step-photo-tag">Photo: maintenance hangar</span>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="step-label">Step 06</div>
+        <h3 class="step-name">Airframe Maintenance</h3>
+        <p class="step-desc">Mandatory inspections, component replacements, airworthiness compliance. A helicopter requires roughly 12 hours of maintenance for every hour it flies. Safety is not optional — and it's not cheap.</p>
+        <div class="step-cost" aria-label="Cost: $705">$705</div>
+      </div>
+    </li>
 
+  </ol>
 </div>
 
-<!-- COST COLUMN VISUALISATION -->
-<div class="steps-container">
+<!-- COST COLUMN -->
+<div class="cost-column-wrap" aria-hidden="true">
   <div class="cost-column" id="costColumn">
-    <div class="cost-bar" data-step="0" style="background: #04A9C7;"><span class="cost-bar-label">Crew Activation</span><span class="cost-bar-amount">$380</span></div>
-    <div class="cost-bar" data-step="1" style="background: #62C3A5;"><span class="cost-bar-label">Fuel & Flight Ops</span><span class="cost-bar-amount">$1,240</span></div>
-    <div class="cost-bar" data-step="2" style="background: #F47922;"><span class="cost-bar-label">Medical Consumables</span><span class="cost-bar-amount">$890</span></div>
-    <div class="cost-bar" data-step="3" style="background: #FFB500; color: #0A365D;"><span class="cost-bar-label">Medical Equipment</span><span class="cost-bar-amount">$640</span></div>
-    <div class="cost-bar" data-step="4" style="background: #04A9C7;"><span class="cost-bar-label">Base Operations</span><span class="cost-bar-amount">$520</span></div>
-    <div class="cost-bar" data-step="5" style="background: #62C3A5;"><span class="cost-bar-label">Airframe Maintenance</span><span class="cost-bar-amount">$705</span></div>
+    <div class="cost-bar" data-step="0" style="background:#04A9C7;"><span class="cost-bar-label">Crew Activation</span><span class="cost-bar-amount">$380</span></div>
+    <div class="cost-bar" data-step="1" style="background:#62C3A5;"><span class="cost-bar-label">Fuel &amp; Flight Ops</span><span class="cost-bar-amount">$1,240</span></div>
+    <div class="cost-bar" data-step="2" style="background:#F47922;"><span class="cost-bar-label">Medical Consumables</span><span class="cost-bar-amount">$890</span></div>
+    <div class="cost-bar" data-step="3" style="background:#FFB500;color:#0A365D;"><span class="cost-bar-label">Medical Equipment</span><span class="cost-bar-amount">$640</span></div>
+    <div class="cost-bar" data-step="4" style="background:#04A9C7;"><span class="cost-bar-label">Base Operations</span><span class="cost-bar-amount">$520</span></div>
+    <div class="cost-bar" data-step="5" style="background:#62C3A5;"><span class="cost-bar-label">Airframe Maintenance</span><span class="cost-bar-amount">$705</span></div>
   </div>
 </div>
 
-<!-- TOTAL REVEAL -->
-<section class="total-section" id="totalSection">
-  <div class="total-label">Total cost per mission</div>
-  <div class="total-amount" id="totalAmount">$0</div>
+<!-- TOTAL -->
+<section class="total-section" id="totalSection" aria-labelledby="total-heading">
+  <div class="total-label" id="total-heading">Total cost per mission</div>
+  <div class="total-amount" id="totalAmount" aria-live="polite">$0</div>
   <p class="total-context">That's what it costs to put a doctor, a paramedic, and a helicopter beside someone who is dying — and bring them back alive.</p>
-  <div class="total-divider"></div>
+  <div class="total-divider" aria-hidden="true"></div>
 </section>
 
-<!-- SCALE SECTION -->
-<section class="scale-section" id="scaleSection">
-  <h2 class="scale-heading">Now Multiply</h2>
+<!-- TESTIMONIAL (placeholder) -->
+<section class="testimonial-section" id="testimonialSection" aria-labelledby="testimonial-heading">
+  <h2 id="testimonial-heading" class="range-label-sr">Patient story</h2>
+  <div class="testimonial-photo">
+    SM
+    <span class="testimonial-photo-tag">Photo</span>
+  </div>
+  <blockquote class="testimonial-quote">
+    They told us the helicopter was 11 minutes away. Those were the longest 11 minutes of our lives. But when that crew landed, everything changed. They saved my husband in a paddock 300 kilometres from the nearest hospital. We owe them everything.
+  </blockquote>
+  <div class="testimonial-attr">
+    <strong>Sarah M.</strong> — Longreach, QLD
+  </div>
+  <div class="testimonial-placeholder-note" aria-hidden="true">Placeholder testimonial — replace with real patient story</div>
+</section>
+
+<!-- SCALE -->
+<section class="scale-section" id="scaleSection" aria-labelledby="scale-heading">
+  <h2 class="scale-heading" id="scale-heading">Now Multiply</h2>
   <p class="scale-copy">LifeFlight doesn't do this once. They do it 8,000 times a year, across the length and breadth of Queensland.</p>
 
-  <div class="scale-stats">
-    <div>
-      <div class="scale-stat-num">8,000+</div>
-      <div class="scale-stat-label">Missions / year</div>
-    </div>
-    <div>
-      <div class="scale-stat-num">$35M</div>
-      <div class="scale-stat-label">Annual cost</div>
-    </div>
-    <div>
-      <div class="scale-stat-num">$4,375</div>
-      <div class="scale-stat-label">Per mission</div>
-    </div>
+  <div class="scale-stats" role="list">
+    <div role="listitem"><div class="scale-stat-num" data-count="8000">0</div><div class="scale-stat-label">Missions / year</div></div>
+    <div role="listitem"><div class="scale-stat-num" data-count="35" data-prefix="$" data-suffix="M">$0M</div><div class="scale-stat-label">Annual cost</div></div>
+    <div role="listitem"><div class="scale-stat-num" data-count="4375" data-prefix="$">$0</div><div class="scale-stat-label">Per mission</div></div>
   </div>
 
   <div class="govt-zero">$0</div>
@@ -712,56 +745,119 @@ input[type="range"]::-moz-range-thumb {
 
   <p class="scale-punchline">Every dollar comes from the community. Every mission flies on generosity alone.</p>
   <p class="scale-sub">Queensland is the only state where critical care helicopters are entirely community-funded.</p>
-
-  <div class="total-divider" style="margin-bottom:0;"></div>
+  <div class="total-divider" aria-hidden="true" style="margin-bottom:0;"></div>
 </section>
 
-<!-- DONATION SLIDER -->
-<section class="slider-section" id="sliderSection">
-  <h2 class="slider-heading">What Could Your Donation Cover?</h2>
+<!-- SLIDER -->
+<section class="slider-section" id="sliderSection" aria-labelledby="slider-heading">
+  <h2 class="slider-heading" id="slider-heading">What Could Your Donation Cover?</h2>
 
-  <div class="slider-amount" id="sliderAmount">$50</div>
-  <div class="slider-equiv" id="sliderEquiv">A bag of IV fluid and emergency medication</div>
+  <div class="slider-amount" id="sliderAmount" aria-live="polite" aria-atomic="true">$50</div>
+  <div class="slider-equiv" id="sliderEquiv" aria-live="polite" aria-atomic="true">A bag of IV fluid and emergency medication</div>
 
   <div class="range-wrap">
-    <input type="range" id="donationSlider" min="25" max="5000" value="50" step="25">
-    <div class="range-labels"><span>$25</span><span>$5,000</span></div>
+    <label for="donationSlider" class="range-label-sr">Donation amount</label>
+    <input type="range" id="donationSlider" min="25" max="5000" value="50" step="25" aria-valuetext="$50">
+    <div class="range-labels" aria-hidden="true"><span>$25</span><span>$5,000</span></div>
   </div>
 
-  <div class="slider-presets" id="presets">
-    <button class="preset-btn active" data-val="50">$50</button>
-    <button class="preset-btn" data-val="100">$100</button>
-    <button class="preset-btn" data-val="250">$250</button>
-    <button class="preset-btn" data-val="500">$500</button>
-    <button class="preset-btn" data-val="1000">$1,000</button>
-    <button class="preset-btn" data-val="4375">$4,375</button>
+  <div class="slider-presets" role="group" aria-label="Preset donation amounts" id="presets">
+    <button class="preset-btn" aria-pressed="true" data-val="50">$50</button>
+    <button class="preset-btn" aria-pressed="false" data-val="100">$100</button>
+    <button class="preset-btn" aria-pressed="false" data-val="250">$250</button>
+    <button class="preset-btn" aria-pressed="false" data-val="500">$500</button>
+    <button class="preset-btn" aria-pressed="false" data-val="1000">$1,000</button>
+    <button class="preset-btn" aria-pressed="false" data-val="4375">$4,375</button>
   </div>
 
   <div class="cta-final">
-    <a href="https://www.lifeflight.org.au/foundation/donate/" class="btn btn--primary" target="_blank" rel="noopener">Donate Now</a>
-    <a href="https://www.lifeflight.org.au/what-we-do/" class="btn btn--ghost" target="_blank" rel="noopener">Learn More</a>
+    <a href="https://www.lifeflight.org.au/foundation/donate/" class="btn btn--primary" id="donateBtn" target="_blank" rel="noopener">Donate Now</a>
+    <a href="https://www.lifeflight.org.au/what-we-do/" class="btn btn--ghost" id="learnMoreBtn" target="_blank" rel="noopener">Learn More</a>
+  </div>
+
+  <div class="share-row">
+    <span class="share-label">Share</span>
+    <button class="share-btn" id="shareTwitter" aria-label="Share on X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
+    <button class="share-btn" id="shareFacebook" aria-label="Share on Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></button>
+    <button class="share-btn" id="shareLinkedIn" aria-label="Share on LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></button>
+    <button class="share-btn" id="shareCopy" aria-label="Copy link to clipboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
   </div>
 </section>
 
-<!-- RUNNING TOTAL BAR -->
-<div class="running-total" id="runningTotal">
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  Cost-per-mission figures are estimates derived from LifeFlight's publicly reported annual operating expenditure (~$35M) divided across ~8,000 annual missions, with category allocations based on industry benchmarks for aeromedical operations. Actual costs vary by mission distance, duration, and clinical complexity. For audited financials, see <a href="https://www.lifeflight.org.au" target="_blank" rel="noopener">lifeflight.org.au</a>.
+</div>
+
+</main>
+
+<!-- RUNNING TOTAL -->
+<div class="running-total" id="runningTotal" role="status" aria-live="polite">
   <div class="running-total-label">Mission cost so far</div>
   <div class="running-total-amount" id="runningAmount">$0</div>
 </div>
 
-<footer class="footer">
+<footer class="footer" role="contentinfo">
   &copy; LifeFlight Australia &middot; <a href="https://www.lifeflight.org.au" target="_blank" rel="noopener">lifeflight.org.au</a>
+  <div class="footer-legal">
+    LifeFlight Australia Ltd &middot; ABN 51 116 392 566 &middot; DGR endorsed &middot; Donations of $2 or more are tax deductible<br>
+    <a href="https://www.lifeflight.org.au/privacy-policy/" target="_blank" rel="noopener">Privacy Policy</a>
+  </div>
 </footer>
 
 <script>
 (function () {
+  'use strict';
+
+  /* --- ERROR MONITORING --- */
+  window.addEventListener('error', function (e) {
+    var err = { type: 'js_error', message: e.message, source: e.filename, line: e.lineno, col: e.colno, timestamp: new Date().toISOString(), url: location.href, ua: navigator.userAgent };
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'ftf_error', error: err });
+    if (navigator.sendBeacon) {
+      // Placeholder: replace with real error endpoint
+      // navigator.sendBeacon('/api/errors', JSON.stringify(err));
+    }
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'ftf_error', error: { type: 'unhandled_promise', message: String(e.reason), timestamp: new Date().toISOString() } });
+  });
+
+  /* --- ANALYTICS --- */
+  window.dataLayer = window.dataLayer || [];
+  function track(event, data) {
+    var payload = { event: event, timestamp: new Date().toISOString() };
+    if (data) { for (var k in data) { if (data.hasOwnProperty(k)) payload[k] = data[k]; } }
+    window.dataLayer.push(payload);
+  }
+
+  /* --- HERO PARTICLES --- */
+  var particleContainer = document.getElementById('heroParticles');
+  for (var p = 0; p < 30; p++) {
+    var dot = document.createElement('div');
+    dot.className = 'particle';
+    dot.style.left = Math.random() * 100 + '%';
+    dot.style.top = (60 + Math.random() * 40) + '%';
+    dot.style.animationDuration = (8 + Math.random() * 16) + 's';
+    dot.style.animationDelay = (Math.random() * 10) + 's';
+    dot.style.width = dot.style.height = (1 + Math.random() * 2) + 'px';
+    particleContainer.appendChild(dot);
+  }
+
+  /* --- SCROLL DEPTH --- */
+  var depthMarkers = { 25: false, 50: false, 75: false, 100: false };
+
+  /* --- DOM --- */
   var steps = document.querySelectorAll('.step');
   var costBars = document.querySelectorAll('.cost-bar');
   var runningTotal = document.getElementById('runningTotal');
   var runningAmount = document.getElementById('runningAmount');
   var progressFill = document.getElementById('progressFill');
+  var progressTrack = progressFill.parentElement;
   var totalSection = document.getElementById('totalSection');
   var totalAmount = document.getElementById('totalAmount');
+  var testimonialSection = document.getElementById('testimonialSection');
   var scaleSection = document.getElementById('scaleSection');
   var sliderSection = document.getElementById('sliderSection');
   var slider = document.getElementById('donationSlider');
@@ -769,84 +865,206 @@ input[type="range"]::-moz-range-thumb {
   var sliderEquiv = document.getElementById('sliderEquiv');
   var presets = document.querySelectorAll('.preset-btn');
   var heroStart = document.getElementById('heroStart');
+  var donateBtn = document.getElementById('donateBtn');
+  var donateBaseUrl = 'https://www.lifeflight.org.au/foundation/donate/';
 
   var costs = [380, 1240, 890, 640, 520, 705];
   var totalCost = 4375;
   var revealedSteps = new Set();
   var currentTotal = 0;
+  var currentDonationVal = 50;
 
-  // Hero start button
+  /* --- HERO START --- */
   heroStart.addEventListener('click', function () {
     steps[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    track('ftf_begin_click');
   });
 
-  // Scroll progress
+  /* --- SCROLL PROGRESS --- */
   function updateProgress() {
     var scrollTop = window.scrollY;
     var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    progressFill.style.width = Math.min(pct, 100) + '%';
+    var pct = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+    progressFill.style.width = pct + '%';
+    progressTrack.setAttribute('aria-valuenow', Math.round(pct));
+    for (var mark in depthMarkers) {
+      if (!depthMarkers[mark] && pct >= parseInt(mark)) {
+        depthMarkers[mark] = true;
+        track('ftf_scroll_depth', { depth: parseInt(mark) });
+      }
+    }
   }
 
-  // Step reveal observer
-  var stepObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
-      var step = entry.target;
-      var idx = Array.prototype.indexOf.call(steps, step);
-      step.classList.add('visible');
+  /* --- GSAP ANIMATIONS --- */
+  function initGSAP() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
 
-      if (!revealedSteps.has(idx)) {
-        revealedSteps.add(idx);
-        currentTotal += costs[idx];
+    // Hero content stagger
+    gsap.from('.hero-pretitle', { opacity: 0, y: 20, duration: 0.8, delay: 0.3 });
+    gsap.from('.hero h1', { opacity: 0, y: 30, duration: 1, delay: 0.5 });
+    gsap.from('.hero p', { opacity: 0, y: 20, duration: 0.8, delay: 0.8 });
+    gsap.from('.hero-start', { opacity: 0, y: 15, duration: 0.6, delay: 1.1 });
 
-        // Show running total bar
-        runningTotal.classList.add('show');
+    // Step reveals with stagger
+    steps.forEach(function (step, i) {
+      var photo = step.querySelector('.step-photo');
+      var body = step.querySelector('.step-body');
 
-        // Animate running total
-        animateNumber(runningAmount, currentTotal);
-        runningAmount.classList.add('bump');
-        setTimeout(function () { runningAmount.classList.remove('bump'); }, 300);
-
-        // Reveal cost bar
-        var bar = costBars[idx];
-        if (bar) {
-          var proportion = costs[idx] / totalCost;
-          var height = Math.max(32, Math.round(proportion * 240));
-          bar.classList.add('reveal');
-          bar.style.height = height + 'px';
+      gsap.fromTo(step, { opacity: 0, y: 40 }, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: step, start: 'top 80%', once: true,
+          onEnter: function () {
+            step.classList.add('visible');
+            revealStep(i);
+          }
         }
+      });
+
+      if (photo) {
+        gsap.fromTo(photo, { opacity: 0, scale: 0.9 }, {
+          opacity: 1, scale: 1, duration: 0.6, delay: 0.1, ease: 'power2.out',
+          scrollTrigger: { trigger: step, start: 'top 80%', once: true }
+        });
+      }
+
+      // Parallax on photo
+      if (photo) {
+        gsap.to(photo, {
+          y: -20,
+          scrollTrigger: { trigger: step, start: 'top bottom', end: 'bottom top', scrub: 1 }
+        });
       }
     });
-  }, { threshold: 0.3, rootMargin: '-5% 0px -5% 0px' });
 
-  steps.forEach(function (s) { stepObserver.observe(s); });
+    // Cost bars
+    costBars.forEach(function (bar, i) {
+      var proportion = costs[i] / totalCost;
+      var height = Math.max(36, Math.round(proportion * 240));
+      gsap.to(bar, {
+        height: height, opacity: 1, duration: 0.8, delay: i * 0.1, ease: 'power2.out',
+        scrollTrigger: { trigger: bar, start: 'top 90%', once: true,
+          onEnter: function () { bar.classList.add('reveal'); }
+        }
+      });
+    });
 
-  // Section reveal observer
-  var sectionObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+    // Total section
+    ScrollTrigger.create({
+      trigger: totalSection, start: 'top 70%', once: true,
+      onEnter: function () {
+        totalSection.classList.add('visible');
+        gsap.fromTo(totalSection, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
+        animateNumber(totalAmount, totalCost, '$');
+        setTimeout(function () { runningTotal.classList.remove('show'); }, 800);
+        track('ftf_total_reveal');
+      }
+    });
 
-        // Animate total count-up
-        if (entry.target === totalSection) {
+    // Testimonial
+    ScrollTrigger.create({
+      trigger: testimonialSection, start: 'top 75%', once: true,
+      onEnter: function () {
+        testimonialSection.classList.add('visible');
+        gsap.fromTo(testimonialSection, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
+      }
+    });
+
+    // Scale section
+    ScrollTrigger.create({
+      trigger: scaleSection, start: 'top 70%', once: true,
+      onEnter: function () {
+        scaleSection.classList.add('visible');
+        gsap.fromTo(scaleSection, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
+        // Animate stat numbers
+        document.querySelectorAll('.scale-stat-num[data-count]').forEach(function (el) {
+          var target = parseInt(el.dataset.count);
+          var prefix = el.dataset.prefix || '';
+          var suffix = el.dataset.suffix || '';
+          animateNumber(el, target, prefix, suffix);
+        });
+        track('ftf_scale_reveal');
+      }
+    });
+
+    // Slider section
+    ScrollTrigger.create({
+      trigger: sliderSection, start: 'top 75%', once: true,
+      onEnter: function () {
+        sliderSection.classList.add('visible');
+        gsap.fromTo(sliderSection, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
+        track('ftf_slider_reveal');
+      }
+    });
+  }
+
+  /* --- FALLBACK (no GSAP) --- */
+  function initFallback() {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        el.classList.add('visible');
+        el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+
+        var idx = el.dataset.stepIndex;
+        if (idx !== undefined) revealStep(parseInt(idx));
+        if (el === totalSection) {
           animateNumber(totalAmount, totalCost, '$');
-          // Hide running total bar when total section is visible
           setTimeout(function () { runningTotal.classList.remove('show'); }, 600);
+          track('ftf_total_reveal');
         }
-      }
+        if (el === scaleSection) {
+          document.querySelectorAll('.scale-stat-num[data-count]').forEach(function (stat) {
+            animateNumber(stat, parseInt(stat.dataset.count), stat.dataset.prefix || '', stat.dataset.suffix || '');
+          });
+          track('ftf_scale_reveal');
+        }
+        if (el === sliderSection) track('ftf_slider_reveal');
+      });
+    }, { threshold: 0.25 });
+
+    steps.forEach(function (s) { observer.observe(s); });
+    [totalSection, testimonialSection, scaleSection, sliderSection].forEach(function (s) { if (s) observer.observe(s); });
+
+    // Cost bars fallback
+    var barObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var bar = entry.target;
+        var idx = parseInt(bar.dataset.step);
+        var proportion = costs[idx] / totalCost;
+        var height = Math.max(36, Math.round(proportion * 240));
+        bar.classList.add('reveal');
+        bar.style.transition = 'height 0.6s cubic-bezier(0.25,0.1,0.25,1), opacity 0.4s ease';
+        bar.style.height = height + 'px';
+      });
+    }, { threshold: 0.1 });
+    costBars.forEach(function (b) { barObserver.observe(b); });
+  }
+
+  function revealStep(idx) {
+    if (revealedSteps.has(idx)) return;
+    revealedSteps.add(idx);
+    currentTotal += costs[idx];
+    runningTotal.classList.add('show');
+    animateNumber(runningAmount, currentTotal);
+    track('ftf_step_reveal', {
+      step_index: idx + 1,
+      step_name: steps[idx].querySelector('.step-name').textContent,
+      step_cost: costs[idx],
+      running_total: currentTotal
     });
-  }, { threshold: 0.3 });
+  }
 
-  sectionObserver.observe(totalSection);
-  sectionObserver.observe(scaleSection);
-  sectionObserver.observe(sliderSection);
-
-  // Number animation
-  function animateNumber(el, target, prefix) {
+  /* --- NUMBER ANIMATION --- */
+  function animateNumber(el, target, prefix, suffix) {
     prefix = prefix || '$';
+    suffix = suffix || '';
     var start = parseInt((el.textContent || '0').replace(/[^0-9]/g, '')) || 0;
-    var duration = 600;
+    var duration = 800;
     var startTime = null;
 
     function tick(ts) {
@@ -854,13 +1072,13 @@ input[type="range"]::-moz-range-thumb {
       var progress = Math.min((ts - startTime) / duration, 1);
       var eased = 1 - Math.pow(1 - progress, 3);
       var val = Math.round(start + (target - start) * eased);
-      el.textContent = prefix + val.toLocaleString();
+      el.textContent = prefix + val.toLocaleString() + suffix;
       if (progress < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
   }
 
-  // Donation slider
+  /* --- SLIDER --- */
   var equivMap = [
     { max: 50, text: 'A bag of IV fluid and emergency medication' },
     { max: 100, text: 'Oxygen supply for an entire flight' },
@@ -870,14 +1088,17 @@ input[type="range"]::-moz-range-thumb {
     { max: 750, text: 'A full set of disposable medical supplies for one mission' },
     { max: 1000, text: 'Medical equipment wear and maintenance for two missions' },
     { max: 2000, text: 'Nearly half the cost of a complete rescue mission' },
-    { max: 3500, text: 'Almost an entire mission — crew, fuel, medicine, flight' },
+    { max: 3500, text: 'Almost an entire mission \u2014 crew, fuel, medicine, flight' },
     { max: 4375, text: 'One complete mission. One life. From paddock to hospital.' },
     { max: 5000, text: 'One full mission with surplus to help fund the next' }
   ];
 
   function updateSlider(val) {
-    sliderAmountEl.textContent = '$' + parseInt(val).toLocaleString();
+    val = parseInt(val);
+    currentDonationVal = val;
+    sliderAmountEl.textContent = '$' + val.toLocaleString();
     slider.value = val;
+    slider.setAttribute('aria-valuetext', '$' + val.toLocaleString());
 
     var equiv = equivMap[equivMap.length - 1].text;
     for (var i = 0; i < equivMap.length; i++) {
@@ -885,28 +1106,77 @@ input[type="range"]::-moz-range-thumb {
     }
     sliderEquiv.textContent = equiv;
 
-    // Update preset active state
     presets.forEach(function (btn) {
-      btn.classList.toggle('active', parseInt(btn.dataset.val) === parseInt(val));
+      btn.setAttribute('aria-pressed', parseInt(btn.dataset.val) === val ? 'true' : 'false');
     });
 
-    // Update range track fill
     var pct = ((val - 25) / (5000 - 25)) * 100;
-    slider.style.background = 'linear-gradient(to right, ' + getComputedStyle(document.documentElement).getPropertyValue('--yellow') + ' ' + pct + '%, rgba(255,255,255,0.1) ' + pct + '%)';
+    slider.style.background = 'linear-gradient(to right, #FFB500 ' + pct + '%, rgba(255,255,255,0.1) ' + pct + '%)';
+
+    donateBtn.href = donateBaseUrl + '?amount=' + val + '&utm_source=fund-the-flight&utm_medium=interactive&utm_campaign=mission-cost';
   }
 
   slider.addEventListener('input', function () { updateSlider(this.value); });
+  slider.addEventListener('change', function () { track('ftf_slider_change', { amount: currentDonationVal }); });
 
   presets.forEach(function (btn) {
-    btn.addEventListener('click', function () { updateSlider(btn.dataset.val); });
+    btn.addEventListener('click', function () {
+      updateSlider(btn.dataset.val);
+      track('ftf_preset_click', { amount: parseInt(btn.dataset.val) });
+    });
   });
 
-  // Init slider
-  updateSlider(50);
+  /* --- CTA TRACKING --- */
+  donateBtn.addEventListener('click', function () { track('ftf_donate_click', { amount: currentDonationVal }); });
+  document.getElementById('learnMoreBtn').addEventListener('click', function () { track('ftf_learn_more_click'); });
 
-  // Scroll listener
+  /* --- SHARE --- */
+  var shareUrl = 'https://fund-the-flight.vercel.app';
+  var shareText = 'Every LifeFlight rescue mission costs $4,375. The government funds $0 of it. See where the money goes:';
+
+  document.getElementById('shareTwitter').addEventListener('click', function () {
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(shareUrl), '_blank', 'width=550,height=420');
+    track('ftf_share', { platform: 'twitter' });
+  });
+  document.getElementById('shareFacebook').addEventListener('click', function () {
+    window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank', 'width=550,height=420');
+    track('ftf_share', { platform: 'facebook' });
+  });
+  document.getElementById('shareLinkedIn').addEventListener('click', function () {
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl), '_blank', 'width=550,height=420');
+    track('ftf_share', { platform: 'linkedin' });
+  });
+  document.getElementById('shareCopy').addEventListener('click', function () {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareUrl).then(function () {
+        var btn = document.getElementById('shareCopy');
+        btn.setAttribute('aria-label', 'Link copied!');
+        setTimeout(function () { btn.setAttribute('aria-label', 'Copy link to clipboard'); }, 2000);
+      });
+    }
+    track('ftf_share', { platform: 'copy_link' });
+  });
+
+  /* --- INIT --- */
+  updateSlider(50);
   window.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
+  track('ftf_page_view');
+
+  // Wait for GSAP to load (deferred), then init
+  function tryInitGSAP() {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      initGSAP();
+    } else {
+      initFallback();
+    }
+  }
+
+  if (document.readyState === 'complete') {
+    tryInitGSAP();
+  } else {
+    window.addEventListener('load', tryInitGSAP);
+  }
 })();
 </script>
 

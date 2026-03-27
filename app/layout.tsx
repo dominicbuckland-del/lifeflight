@@ -26,6 +26,20 @@ export const metadata: Metadata = {
   title: "LifeFlight Queensland Mission Report",
   description:
     "Find out how many times LifeFlight flew near your home this year.",
+  openGraph: {
+    title: "LifeFlight Queensland Mission Report",
+    description:
+      "Enter your postcode and see how many LifeFlight rescue missions flew near your home in 2025.",
+    siteName: "LifeFlight Queensland",
+    type: "website",
+    url: "https://lifeflight.vercel.app",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "LifeFlight Queensland Mission Report",
+    description:
+      "Enter your postcode and see how many LifeFlight rescue missions flew near your home in 2025.",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",

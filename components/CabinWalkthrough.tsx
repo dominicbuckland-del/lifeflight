@@ -16,7 +16,7 @@ const stations: Station[] = [
     label: "01",
     title: "Flight Deck",
     description:
-      "Dual-pilot cockpit with night vision capability, satellite navigation, and terrain awareness systems. LifeFlight crews fly in conditions most aircraft won't — storms, mountain ranges, zero visibility.",
+      "Dual-pilot cockpit with night vision capability, satellite navigation, and terrain awareness systems. LifeFlight crews fly in conditions most aircraft won\u2019t \u2014 storms, mountain ranges, zero visibility.",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
         <rect x="12" y="20" width="40" height="28" stroke="#FFB500" strokeWidth="2" />
@@ -34,7 +34,7 @@ const stations: Station[] = [
     label: "02",
     title: "Cardiac Monitor",
     description:
-      "Hospital-grade 12-lead ECG, continuous SpO2, invasive blood pressure, capnography, and defibrillation. The same monitoring capability as an emergency department — at 2,000 feet.",
+      "Hospital-grade 12-lead ECG, continuous SpO2, invasive blood pressure, capnography, and defibrillation. The same monitoring capability as an emergency department \u2014 at 2,000 feet.",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
         <rect x="10" y="14" width="44" height="36" stroke="#FFB500" strokeWidth="2" />
@@ -50,7 +50,7 @@ const stations: Station[] = [
     label: "03",
     title: "Ventilator",
     description:
-      "Transport ventilator providing invasive and non-invasive ventilation, with altitude compensation. Keeps patients breathing when their own lungs can't — even as cabin pressure changes in flight.",
+      "Transport ventilator providing invasive and non-invasive ventilation, with altitude compensation. Keeps patients breathing when their own lungs can\u2019t \u2014 even as cabin pressure changes in flight.",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
         <rect x="18" y="10" width="28" height="40" rx="0" stroke="#FFB500" strokeWidth="2" />
@@ -82,7 +82,7 @@ const stations: Station[] = [
     label: "05",
     title: "Infusion Pumps",
     description:
-      "Multiple syringe drivers delivering precise doses of critical medications — vasopressors to maintain blood pressure, sedation for intubated patients, pain relief for trauma victims.",
+      "Multiple syringe drivers delivering precise doses of critical medications \u2014 vasopressors to maintain blood pressure, sedation for intubated patients, pain relief for trauma victims.",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
         <rect x="10" y="16" width="18" height="32" stroke="#FFB500" strokeWidth="2" />
@@ -101,7 +101,7 @@ const stations: Station[] = [
     label: "06",
     title: "Ultrasound",
     description:
-      "Point-of-care ultrasound for rapid assessment — detecting internal bleeding, collapsed lungs, and cardiac tamponade. Decisions that once required a hospital can now happen mid-flight.",
+      "Point-of-care ultrasound for rapid assessment \u2014 detecting internal bleeding, collapsed lungs, and cardiac tamponade. Decisions that once required a hospital can now happen mid-flight.",
     icon: (
       <svg viewBox="0 0 64 64" fill="none" className="w-full h-full">
         <rect x="14" y="12" width="36" height="30" stroke="#FFB500" strokeWidth="2" />
@@ -134,6 +134,7 @@ const stations: Station[] = [
 
 export default function CabinWalkthrough() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
 
@@ -147,6 +148,18 @@ export default function CabinWalkthrough() {
     }
   }, []);
 
+  const goNext = () => {
+    const next = Math.min(activeIndex + 1, stations.length - 1);
+    setActiveIndex(next);
+    scrollToIndex(next);
+  };
+
+  const goPrev = () => {
+    const prev = Math.max(activeIndex - 1, 0);
+    setActiveIndex(prev);
+    scrollToIndex(prev);
+  };
+
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -156,7 +169,7 @@ export default function CabinWalkthrough() {
       const scrollLeft = container.scrollLeft;
       const cardWidth = container.offsetWidth;
       const index = Math.round(scrollLeft / cardWidth);
-      setActiveIndex(Math.min(index, stations.length - 1));
+      setActiveIndex(Math.min(Math.max(index, 0), stations.length - 1));
     };
 
     container.addEventListener("scroll", handleScroll, { passive: true });
@@ -178,16 +191,31 @@ export default function CabinWalkthrough() {
         </p>
       </div>
 
-      {/* YouTube embed */}
+      {/* YouTube embed with lazy load */}
       <div className="px-4 md:px-6 pb-6">
         <div className="max-w-lg mx-auto md:mx-0 aspect-video bg-[#111] relative overflow-hidden">
-          <iframe
-            src="https://www.youtube.com/embed/fEAnMMAV7RE?rel=0&modestbranding=1"
-            title="Inside the LifeFlight Flying ICU"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="absolute inset-0 w-full h-full"
-          />
+          {videoLoaded ? (
+            <iframe
+              src="https://www.youtube.com/embed/fEAnMMAV7RE?rel=0&modestbranding=1&autoplay=1"
+              title="Inside the LifeFlight Flying ICU"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full"
+            />
+          ) : (
+            <button
+              onClick={() => setVideoLoaded(true)}
+              className="absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-3 group"
+              aria-label="Play video"
+            >
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-lf-yellow/90 group-hover:bg-lf-yellow group-active:scale-95 flex items-center justify-center transition-all duration-300">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="#0A365D" className="ml-1">
+                  <polygon points="5,3 19,12 5,21" />
+                </svg>
+              </div>
+              <span className="text-white/40 font-mulish text-xs">Watch the cabin tour</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -195,7 +223,7 @@ export default function CabinWalkthrough() {
       <div
         ref={scrollRef}
         className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         {stations.map((station) => (
           <div
@@ -204,7 +232,7 @@ export default function CabinWalkthrough() {
           >
             <div className="max-w-lg mx-auto md:mx-0 border border-white/10 bg-white/[0.02] p-5 md:p-8">
               <div className="flex items-start gap-4 md:gap-6">
-                <div className="w-16 h-16 md:w-20 md:h-20 shrink-0">
+                <div className="w-14 h-14 md:w-20 md:h-20 shrink-0">
                   {station.icon}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -224,7 +252,7 @@ export default function CabinWalkthrough() {
         ))}
       </div>
 
-      {/* Navigation dots + counter */}
+      {/* Navigation */}
       <div className="px-4 md:px-6 py-6 md:py-8 flex items-center justify-between max-w-lg mx-auto md:mx-0">
         <div className="flex gap-1.5">
           {stations.map((_, i) => (
@@ -243,9 +271,31 @@ export default function CabinWalkthrough() {
             />
           ))}
         </div>
-        <p className="text-white/20 font-mono text-xs">
-          {String(activeIndex + 1).padStart(2, "0")}/{String(stations.length).padStart(2, "0")}
-        </p>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={goPrev}
+            disabled={activeIndex === 0}
+            className="text-white/30 hover:text-white disabled:opacity-20 active:scale-90 transition-all duration-300"
+            aria-label="Previous station"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <p className="text-white/20 font-mono text-xs tabular-nums">
+            {String(activeIndex + 1).padStart(2, "0")}/{String(stations.length).padStart(2, "0")}
+          </p>
+          <button
+            onClick={goNext}
+            disabled={activeIndex === stations.length - 1}
+            className="text-white/30 hover:text-white disabled:opacity-20 active:scale-90 transition-all duration-300"
+            aria-label="Next station"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );

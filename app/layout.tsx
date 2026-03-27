@@ -1,30 +1,33 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto, Mulish } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const roboto = Roboto({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
+  weight: ["400", "700", "900"],
+  variable: "--font-roboto",
+});
+
+const mulish = Mulish({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-mulish",
 });
 
 export const metadata: Metadata = {
-  title: "LifeFlight — Every Second Counts",
+  title: "LifeFlight Queensland Mission Report",
   description:
-    "Queensland's largest aeromedical service. When every second counts, LifeFlight delivers critical care from the sky. 45 years of saving lives.",
-  openGraph: {
-    title: "LifeFlight — Every Second Counts",
-    description: "Queensland's largest aeromedical service. Critical care from the sky.",
-    type: "website",
-  },
+    "Find out how many times LifeFlight flew near your home this year.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="antialiased bg-navy text-white">
+    <html lang="en">
+      <body className={`${roboto.variable} ${mulish.variable} antialiased`}>
         {children}
       </body>
     </html>

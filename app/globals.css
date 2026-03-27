@@ -3,27 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --font-inter: 'Inter', system-ui, sans-serif;
+  --lf-yellow: #FFB500;
+  --lf-navy: #0A365D;
+  --lf-white: #FFFFFF;
+  --lf-black: #000000;
+  --lf-foundation: #F47922;
+  --lf-medical: #62C3A5;
+  --lf-training: #04A9C7;
 }
 
 * {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background: #041322;
-  color: #ffffff;
-  font-family: var(--font-inter);
-  -webkit-font-smoothing: antialiased;
-}
-
-@layer utilities {
-  .text-balance { text-wrap: balance; }
-  .clip-diagonal {
-    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
-  }
+  border-radius: 0 !important;
 }

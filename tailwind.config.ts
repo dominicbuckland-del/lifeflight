@@ -9,17 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy:        "#041322",
-        "navy-mid":  "#0A2540",
-        "navy-light":"#0D3460",
-        orange:      "#F47922",
-        "orange-dark":"#D4611A",
-        sky:         "#04A9C7",
-        gold:        "#FFB500",
-        cream:       "#FDF8F3",
+        "lf-yellow": "#FFB500",
+        "lf-navy": "#0A365D",
+        "lf-white": "#FFFFFF",
+        "lf-black": "#000000",
+        "lf-foundation": "#F47922",
+        "lf-medical": "#62C3A5",
+        "lf-training": "#04A9C7",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        roboto: ["var(--font-roboto)", "sans-serif"],
+        mulish: ["var(--font-mulish)", "sans-serif"],
       },
     },
   },

@@ -9,13 +9,14 @@ interface EntryScreenProps {
 
 function LifeFlightLogo() {
   return (
-    <div className="flex items-center gap-3 mb-8">
+    <div className="flex items-center gap-3 mb-6 md:mb-8">
       <svg
-        width="48"
-        height="48"
+        width="40"
+        height="40"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        className="w-10 h-10 md:w-12 md:h-12 shrink-0"
       >
         <path
           d="M24 8L8 24h6v12h20V24h6L24 8z"
@@ -35,7 +36,7 @@ function LifeFlightLogo() {
           strokeLinecap="square"
         />
       </svg>
-      <span className="text-white font-roboto font-bold text-2xl tracking-wider">
+      <span className="text-white font-roboto font-bold text-xl md:text-2xl tracking-wider">
         LIFEFLIGHT
       </span>
     </div>
@@ -49,7 +50,7 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isValidQldPostcode(postcode)) {
-      setError("Enter a valid QLD postcode (4000–4999)");
+      setError("Enter a valid QLD postcode (4000\u20134999)");
       return;
     }
     setError("");
@@ -65,25 +66,25 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
   };
 
   return (
-    <main className="min-h-screen bg-lf-navy flex flex-col items-center justify-center px-6 py-12">
+    <main className="min-h-dvh bg-lf-navy flex flex-col items-center justify-center px-5 py-10 pb-[env(safe-area-inset-bottom,0px)]">
       <div className="w-full max-w-md flex flex-col items-center text-center">
         <LifeFlightLogo />
 
-        <p className="text-lf-yellow font-mulish text-xs tracking-[0.25em] uppercase mb-6">
+        <p className="text-lf-yellow font-mulish text-[11px] md:text-xs tracking-[0.25em] uppercase mb-5 md:mb-6">
           Queensland Mission Report
         </p>
 
-        <h1 className="text-white font-roboto font-bold text-4xl md:text-5xl leading-tight mb-4">
+        <h1 className="text-white font-roboto font-bold text-3xl md:text-5xl leading-tight mb-3 md:mb-4">
           Your community.
           <br />
           Their mission.
         </h1>
 
-        <p className="text-white/70 font-roboto text-base mb-10">
+        <p className="text-white/70 font-roboto text-sm md:text-base mb-8 md:mb-10 px-2">
           Find out how many times LifeFlight flew near your home this year.
         </p>
 
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3 md:gap-4">
           <input
             type="text"
             inputMode="numeric"
@@ -92,7 +93,7 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
             value={postcode}
             onChange={handleChange}
             placeholder="Enter your postcode"
-            className="w-full bg-white/10 border border-white/20 text-white text-center text-2xl font-roboto py-4 px-6 placeholder:text-white/30 focus:outline-none focus:border-lf-yellow transition-colors duration-300 ease-in-out"
+            className="w-full bg-white/10 border border-white/20 text-white text-center text-[16px] md:text-2xl font-roboto py-4 px-6 placeholder:text-white/30 focus:outline-none focus:border-lf-yellow transition-colors duration-300 ease-in-out"
           />
 
           {error && (
@@ -101,28 +102,28 @@ export default function EntryScreen({ onSubmit }: EntryScreenProps) {
 
           <button
             type="submit"
-            className="w-full bg-lf-yellow text-lf-black font-mulish font-bold text-base py-4 px-6 hover:bg-yellow-400 transition-colors duration-300 ease-in-out"
+            className="w-full bg-lf-yellow text-lf-black font-mulish font-bold text-base py-4 px-6 active:bg-yellow-500 hover:bg-yellow-400 transition-colors duration-300 ease-in-out"
           >
             Generate My Report
           </button>
         </form>
 
-        <div className="mt-16 w-full border-t border-white/10 pt-6 grid grid-cols-3 gap-4 text-center">
+        <div className="mt-10 md:mt-16 w-full border-t border-white/10 pt-5 md:pt-6 grid grid-cols-3 gap-2 md:gap-4 text-center">
           <div>
-            <p className="text-lf-yellow font-roboto font-bold text-lg">
+            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">
               8,000+
             </p>
-            <p className="text-white/50 font-mulish text-xs">people helped</p>
+            <p className="text-white/50 font-mulish text-[10px] md:text-xs">people helped</p>
           </div>
           <div>
-            <p className="text-lf-yellow font-roboto font-bold text-lg">
+            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">
               3,200+
             </p>
-            <p className="text-white/50 font-mulish text-xs">QLD missions</p>
+            <p className="text-white/50 font-mulish text-[10px] md:text-xs">QLD missions</p>
           </div>
           <div>
-            <p className="text-lf-yellow font-roboto font-bold text-lg">9</p>
-            <p className="text-white/50 font-mulish text-xs">rescue bases</p>
+            <p className="text-lf-yellow font-roboto font-bold text-base md:text-lg">9</p>
+            <p className="text-white/50 font-mulish text-[10px] md:text-xs">rescue bases</p>
           </div>
         </div>
       </div>

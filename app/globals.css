@@ -14,4 +14,14 @@
 
 * {
   border-radius: 0 !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  overscroll-behavior-y: none;
 }

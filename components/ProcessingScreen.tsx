@@ -34,8 +34,8 @@ export default function ProcessingScreen({ postcode }: ProcessingScreenProps) {
   }, [visibleLines, postcode, router]);
 
   return (
-    <main className="min-h-screen bg-lf-navy flex items-center justify-center px-6">
-      <div className="w-full max-w-lg font-mono text-sm text-white/80 space-y-3">
+    <main className="min-h-dvh bg-lf-navy flex items-center justify-center px-5">
+      <div className="w-full max-w-lg font-mono text-xs md:text-sm text-white/80 space-y-3">
         {lines.slice(0, visibleLines).map((line, i) => {
           const isFirst = i === 0;
           const isLast = i === lines.length - 1;
@@ -44,7 +44,7 @@ export default function ProcessingScreen({ postcode }: ProcessingScreenProps) {
             : line;
 
           return (
-            <div key={i} className="flex items-center gap-2">
+            <div key={i} className="flex items-start gap-2 break-words">
               {isLast ? (
                 <span className="text-lf-medical">{display} &#10003;</span>
               ) : (

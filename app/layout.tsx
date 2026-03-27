@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Roboto, Mulish } from "next/font/google";
 import "./globals.css";
 
@@ -14,10 +14,22 @@ const mulish = Mulish({
   variable: "--font-mulish",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
   title: "LifeFlight Queensland Mission Report",
   description:
     "Find out how many times LifeFlight flew near your home this year.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({

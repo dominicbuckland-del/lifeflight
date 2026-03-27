@@ -2,6 +2,7 @@
 
 import type { MissionData } from "@/lib/missionData";
 import type { MissionLog } from "@/lib/missionGenerator";
+import CabinWalkthrough from "./CabinWalkthrough";
 
 interface MissionReportProps {
   postcode: string;
@@ -20,27 +21,6 @@ export default function MissionReport({
     year: "numeric",
   });
   const timeSaved = missionLog.roadMinutes - missionLog.lifeflightMinutes;
-
-  const coverageColor =
-    missionData.coverageStatus === "covered"
-      ? "bg-lf-medical"
-      : missionData.coverageStatus === "extended"
-        ? "bg-lf-yellow"
-        : "bg-lf-foundation";
-
-  const coverageLabel =
-    missionData.coverageStatus === "covered"
-      ? "ACTIVE COVERAGE"
-      : missionData.coverageStatus === "extended"
-        ? "EXTENDED RANGE"
-        : "CRITICAL ZONE";
-
-  const coveragePosition =
-    missionData.coverageStatus === "covered"
-      ? "left-[25%]"
-      : missionData.coverageStatus === "extended"
-        ? "left-[55%]"
-        : "left-[85%]";
 
   return (
     <div>
@@ -96,36 +76,8 @@ export default function MissionReport({
         </p>
       </div>
 
-      {/* COVERAGE STATUS */}
-      <div className="w-full bg-white px-5 md:px-6 py-10 md:py-12">
-        <div className="max-w-lg mx-auto">
-          <div className="flex items-center justify-between mb-4 gap-2">
-            <p className="font-mono text-[10px] md:text-xs text-lf-navy/40 tracking-wider">
-              COVERAGE STATUS
-            </p>
-            <p className={`font-mono text-[10px] md:text-xs tracking-wider shrink-0 ${
-              missionData.coverageStatus === "covered"
-                ? "text-lf-medical"
-                : missionData.coverageStatus === "extended"
-                  ? "text-lf-yellow"
-                  : "text-lf-foundation"
-            }`}>
-              {coverageLabel}
-            </p>
-          </div>
-          <div className="relative w-full h-2 bg-lf-navy/10">
-            <div
-              className={`absolute w-full h-full opacity-30 ${coverageColor}`}
-            />
-            <div
-              className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 md:w-4 md:h-4 ${coverageColor} ${coveragePosition}`}
-            />
-          </div>
-          <p className="text-lf-navy/50 font-roboto text-xs md:text-sm mt-5 md:mt-6 text-center">
-            9 bases across Australia and Singapore, covering 1.85M km²
-          </p>
-        </div>
-      </div>
+      {/* INSIDE THE FLYING ICU */}
+      <CabinWalkthrough />
 
       {/* HUMAN SECTION */}
       <div className="w-full bg-[#f5f5f5] px-5 md:px-6 py-10 md:py-12">
